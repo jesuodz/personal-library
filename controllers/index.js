@@ -1,3 +1,4 @@
-const add = require('./add');
+const add         = require('./add');
+const getAllBooks = require('./getAllBooks');
 
-module.exports = { add };
+module.exports = { add, getAllBooks };

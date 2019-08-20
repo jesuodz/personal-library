@@ -61,8 +61,11 @@ suite('Functional Tests', () => {
     
     suiteSetup( done => {
       const books = [
-        {title: 'Automate The Boring Stuff With Python'},
-        {title: 'Clean Architecture: A Craftsman\'s Guide to Software Structure and Design'}
+        { 
+          title: 'Automate The Boring Stuff With Python',
+          comments: [{ text: 'An excellent book'}, { text: 'OMG!'}]
+        },
+        { title: 'Clean Architecture: A Craftsman\'s Guide to Software Structure and Design' }
       ];
       Book.insertMany(books).then(() => done());
     });
@@ -71,10 +74,10 @@ suite('Functional Tests', () => {
       chai.request(app).get('/api/books').then(res => {
         assert.equal(res.status, 200);
         assert.isArray(res.body);
-        assert.equal(res.body.length, 2);
-        assert.equal(res.body[0].title, 'The Pragmatic Programmer');
-        assert.exists(res.body[0]._id);
-        assert.equal(res.body[0].commentCount, 2);
+        assert.equal(res.body.length, 3);
+        assert.equal(res.body[1].title, 'Automate The Boring Stuff With Python');
+        assert.exists(res.body[1]._id);
+        assert.equal(res.body[1].commentCount, 2);
         done();
       })
     });
