@@ -10,8 +10,7 @@ const config      = require('./config')();
 const testRunner  = require('./test-runner');
 const booksRoute  = require('./routes/api');
 // Configuration
-app.use(helmet.noCache());
-app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }));
+app.use(helmet(config.SECURITY));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

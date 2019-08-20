@@ -16,6 +16,10 @@ const config = () => {
   return {
     NODE_ENV: env,
     PORT: process.env.PORT || 5000,
+    SECURITY: {
+      noCache: true,
+      hidePoweredBy: { setTo: 'PHP 4.2.0' }
+    },
     ...dbKeys
   }
 };
