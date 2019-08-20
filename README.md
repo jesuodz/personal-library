@@ -6,7 +6,7 @@
 You will need to create a `keys_dev.js` file in the config folder as:
 ```
 module.exports = {
-    mongoURI: 'YOUR_OWN_MONGO_URI'
+  mongoURI: 'YOUR_OWN_MONGO_URI'
 }
 ```
 
@@ -36,6 +36,10 @@ Server runs on `http://localhost:5000` and client runs on `http://localhost:3000
 
 ## Author
 Jesús Ordosgoitty [jesuodz](https://jesuodz.github.io) | [Twitter](https://twitter.com/jesuodz)
+
+## License
+
+[MIT](./LICENSE)
 
 ## Acknowledgments
 

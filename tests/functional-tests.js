@@ -2,82 +2,144 @@ const chaiHttp  = require('chai-http');
 const chai      = require('chai');
 const assert    = chai.assert;
 const app       = require('../app');
+const Book      = require('../models/Book');
 
 chai.use(chaiHttp);
 
 suite('Functional Tests', () => {
 
-    test('Return {msg: \'Test Works\'}', () => {
+  suiteSetup(done => {
+    Book.deleteMany({}).then(() => done());
+  })
+
+  test('Return {msg: \'Test Works\'}', () => {
+    chai
+      .request(app)
+      .get('/api/books/test')
+      .then( res => {
+        assert.equal(res.status, 200);
+        assert.exists(res.body.msg);
+        assert.equal(res.body.msg, 'Test works');
+      })
+  });
+
+  suite('POST /api/books/ => object with book data', () => {
+    
+    test('I can add a book', done => {
       chai
         .request(app)
-        .get('/api/books/test')
+        .post('/api/books')
+        .send({
+          title: 'The Pragmatic Programmer'
+        })
         .then( res => {
           assert.equal(res.status, 200);
-          assert.exists(res.body.msg);
-          assert.equal(res.body.msg, 'Test works');
+          assert.equal(res.body.title, 'The Pragmatic Programmer');
+          assert.exists(res.body._id);
+          done();
+        }).catch(err => console.log(`${err}`));
+    });
+    
+    test('Missing required fields', done => {
+      chai
+        .request(app)
+        .post('/api/books')
+        .send({
+          title: ''
         })
-    })
+        .then( res => {
+          assert.equal(res.status, 400);
+          assert.equal(res.body.title, 'no title sent');
+          assert.notExists(res.body._id);
+          done();
+        }).catch(err => console.log(`${err}`));
+    });
+    
+  });
+  
+  suite('GET /api/books => Array of objects with book data', () => {
+    
+    suiteSetup( done => {
+      const books = [
+        {title: 'Automate The Boring Stuff With Python'},
+        {title: 'Clean Architecture: A Craftsman\'s Guide to Software Structure and Design'}
+      ];
+      Book.insertMany(books).then(() => done());
+    });
 
-    suite('POST /api/books/ => object with book data', () => {
-      
-      test('I can add a book', done => {
-        chai
-          .request(app)
-          .post('/api/books')
-          .send({
-            title: 'The Pragmatic Programmer'
-          })
-          .then( res => {
-            assert.equal(res.status, 200);
-            assert.equal(res.body.title, 'The Pragmatic Programmer');
-            assert.exists(res.body._id);
-            done();
-          }).catch(err => console.log(`${err}`));
-      });
-      
-      test('Missing required fields', done => {
-        chai
-          .request(app)
-          .post('/api/books')
-          .send({
-            title: ''
-          })
-          .then( res => {
-            assert.equal(res.status, 400);
-            assert.equal(res.body.title, 'no title sent');
-            assert.notExists(res.body._id);
-            done();
-          }).catch(err => console.log(`${err}`));
-      });
+    test('Array of books', done => {
+      chai.request(app).get('/api/books').then(res => {
+        assert.equal(res.status, 200);
+        assert.isArray(res.body);
+        assert.equal(res.body.length, 2);
+        assert.equal(res.body[0].title, 'The Pragmatic Programmer');
+        assert.exists(res.body[0]._id);
+        assert.equal(res.body[0].commentCount, 2);
+        done();
+      })
+    });
+    
+    test('Not found', done => {
+      chai.request(app).get('/api').then(res => {
+        assert.equal(res.status, 404);
+        assert.exists('notfound');
+        assert.equal(res.body.notfound, 'resource not found');
+        done();
+      })
+    });
+    
+  });
+  /*  
+  suite('DELETE /api/books/:_id => text', () => {
+    
+    test('No _id', done => {
       
     });
     
-    // suite('GET /api/books/{project} => Array of objects with issue data', () => {
+    test('Valid _id', done => {
       
-    //   test('No filter', done => {
-        
-    //     });
-      
-    //   test('One filter', done => {
-        
-    //   });
-      
-    //   test('Multiple filters', done => {
-        
-    //   });
-      
-    // });
-    
-    // suite('DELETE /api/books/{project} => text', () => {
-      
-    //   test('No _id', done => {
-        
-    //   });
-      
-    //   test('Valid _id', done => {
-        
-    //   });
-      
-    // });
+    });
 
+    test('Invalid _id', done => {
+
+    });
+    
+  });
+
+  suite('GET /api/books/:_id => text', () => {
+    
+    test('No _id', done => {
+      
+    });
+    
+    test('Valid _id', done => {
+      
+    });
+
+    test('Invalid _id', done => {
+
+    });
+    
+    test('Comment count must be zero', done => {
+      chai.request(app).get('/api/books')
+    });
+
+  });
+
+  suite('POST /api/books/:_id => text', () => {
+    
+    test('No _id', done => {
+      
+    });
+    
+    test('Valid _id', done => {
+      
+    });
+
+    test('Invalid _id', done => {
+
+    });
+  
+  }); 
+  */
 });
