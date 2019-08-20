@@ -35,31 +35,22 @@ suite('Functional Tests', () => {
           }).catch(err => console.log(`${err}`));
       });
       
-      // test('Required fields filled in', done => {
-        
-      // });
-      
-      // test('Missing required fields', done => {
-        
-      // });
+      test('Missing required fields', done => {
+        chai
+          .request(app)
+          .post('/api/books')
+          .send({
+            title: ''
+          })
+          .then( res => {
+            assert.equal(res.status, 400);
+            assert.equal(res.body.title, 'no title sent');
+            assert.notExists(res.body._id);
+            done();
+          }).catch(err => console.log(`${err}`));
+      });
       
     });
-    
-    // suite('PUT /api/books/{project} => text', () => {
-      
-    //   test('No body', done => {
-        
-    //   });
-      
-    //   test('One field to update', done => {
-        
-    //   });
-      
-    //   test('Multiple fields to update', done => {
-        
-    //   });
-      
-    // });
     
     // suite('GET /api/books/{project} => Array of objects with issue data', () => {
       
