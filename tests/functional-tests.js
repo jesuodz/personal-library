@@ -77,7 +77,7 @@ suite('Functional Tests', () => {
         assert.equal(res.body.length, 3);
         assert.equal(res.body[1].title, 'Automate The Boring Stuff With Python');
         assert.exists(res.body[1]._id);
-        assert.equal(res.body[1].commentCount, 2);
+        assert.equal(res.body[1].commentcount, 2);
         done();
       })
     });
@@ -87,6 +87,17 @@ suite('Functional Tests', () => {
         assert.equal(res.status, 404);
         assert.exists('notfound');
         assert.equal(res.body.notfound, 'resource not found');
+        done();
+      })
+    });
+
+    test('No books stored', done => {
+      Book.deleteMany({}).then(() => {});
+
+      chai.request(app).get('/api/books').then(res => {
+        assert.equal(res.status, 400);
+        assert.exists('nobooks');
+        assert.equal(res.body.nobooks, 'no books stored');
         done();
       })
     });
