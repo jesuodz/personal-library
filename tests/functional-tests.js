@@ -99,27 +99,56 @@ suite('Functional Tests', () => {
         assert.exists('nobooks');
         assert.equal(res.body.nobooks, 'no books stored');
         done();
-      })
+      });
     });
     
   });
-  /*  
+    
   suite('DELETE /api/books/:_id => text', () => {
+    let booksIDs = [];
+    suiteSetup( done => {
+      const books = [
+        { 
+          title: 'Automate The Boring Stuff With Python',
+          comments: [{ text: 'An excellent book'}, { text: 'OMG!'}]
+        },
+        { title: 'Clean Architecture: A Craftsman\'s Guide to Software Structure and Design' },
+        { title: 'The Pragmatic Programmer' }
+      ];
+      Book.insertMany(books).then(bookarr => {
+        booksIDs = bookarr.map(book => book._id );
+        done();
+      });
+      
+    });
     
     test('No _id', done => {
-      
+      chai.request(app).delete('/api/books').then(res => {
+        assert.equal(res.status, 400);
+        assert.exists('noid');
+        assert.equal(res.body.noid, 'no books sent');
+        done();
+      });
     });
     
     test('Valid _id', done => {
-      
+      chai.request(app).delete(`/api/books/${booksIDs[2]}`).then(res => {
+        assert.equal(res.status, 200);
+        assert.equal(res.body.success, booksIDs[2]);
+        done();
+      });
     });
 
     test('Invalid _id', done => {
+      done();
+    });
 
+    test('ID not found', done => {
+      done();
     });
     
   });
-
+  /*
   suite('GET /api/books/:_id => text', () => {
     
     test('No _id', done => {
@@ -142,16 +171,27 @@ suite('Functional Tests', () => {
 
   suite('POST /api/books/:_id => text', () => {
     
+    let IDtest = '';
+
+    suiteSetup( done => {
+      IDtest = Book.findOne().then(book => book._id);
+      done();
+    });
+    
     test('No _id', done => {
-      
+      chai.request(app).post('api/books').then(res => {
+        done();
+      })
     });
     
     test('Valid _id', done => {
-      
+      chai.request(app).post(`/api/books/${IDtest}`).then(res => {
+        done();
+      })
     });
 
     test('Invalid _id', done => {
-
+      done();
     });
   
   }); 
