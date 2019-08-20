@@ -7,7 +7,6 @@
     "client": "npm start --prefix client",
     "server": "nodemon app.js --ignore client/ --ignore test/",
     "start": "node app.js",
-    "test": "mocha --timeout 2500 --exit",
     "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "keywords": [
