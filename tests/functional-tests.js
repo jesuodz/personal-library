@@ -126,27 +126,36 @@ suite('Functional Tests', () => {
       assert.equal(res.body.success, booksIDs[2]);
     });
   });
-  /*
+  
   suite('GET /api/books/:_id => text', () => {
     
-    test('No _id', () => {
+    test('Comment array length must be 2', async () => {
+      const query = { title: 'Automate The Boring Stuff With Python' };
+      const _id = await Book.findOne(query).then(book => book._id);
+
+      const res = await chai.request(app).
+        get(`/api/books/${_id}`).
+        then(res => res);
       
-    });
-    
-    test('Valid _id', () => {
-      
+      assert.equal(res.status, 200);
+      assert.equal(res.body.title, query.title);
+      assert.equal(res.body.comments.length, 2);
     });
 
-    test('Invalid _id', () => {
+    test('Comment array length must be 0', async () => {
+      const newBook = { title: 'The Pragmatic Programmer' };
+      const _id = await new Book(newBook).save().then(book => book._id);
 
-    });
-    
-    test('Comment count must be zero', () => {
-      chai.request(app).get('/api/books')
-    });
+      const res = await chai.request(app).
+        get(`/api/books/${_id}`).
+        then(res => res);
+      
+      assert.equal(res.status, 200);
+      assert.equal(res.body.comments.length, 0);
+    })
 
   });
-
+  /*
   suite('POST /api/books/:_id => text', () => {
     
     let IDtest = '';
