@@ -8,8 +8,8 @@ chai.use(chaiHttp);
 
 suite('Functional Tests', () => {
 
-  suiteSetup(done => {
-    Book.deleteMany({}).then(() => done());
+  suiteSetup(() => {
+    Book.deleteMany({}).then(() => {}).catch(err => console.log(err));
   })
 
   test('Return {msg: \'Test Works\'}', () => {
@@ -20,12 +20,12 @@ suite('Functional Tests', () => {
         assert.equal(res.status, 200);
         assert.exists(res.body.msg);
         assert.equal(res.body.msg, 'Test works');
-      })
+      }).catch(err => console.log(err));
   });
 
   suite('POST /api/books/ => object with book data', () => {
     
-    test('I can add a book', done => {
+    test('I can add a book', () => {
       chai
         .request(app)
         .post('/api/books')
@@ -36,11 +36,11 @@ suite('Functional Tests', () => {
           assert.equal(res.status, 200);
           assert.equal(res.body.title, 'The Pragmatic Programmer');
           assert.exists(res.body._id);
-          done();
+
         }).catch(err => console.log(`${err}`));
     });
     
-    test('Missing required fields', done => {
+    test('Missing required fields', () => {
       chai
         .request(app)
         .post('/api/books')
@@ -51,7 +51,7 @@ suite('Functional Tests', () => {
           assert.equal(res.status, 400);
           assert.equal(res.body.title, 'no title sent');
           assert.notExists(res.body._id);
-          done();
+
         }).catch(err => console.log(`${err}`));
     });
     
@@ -59,7 +59,7 @@ suite('Functional Tests', () => {
   
   suite('GET /api/books => Array of objects with book data', () => {
     
-    suiteSetup( done => {
+    suiteSetup( () => {
       const books = [
         { 
           title: 'Automate The Boring Stuff With Python',
@@ -67,10 +67,10 @@ suite('Functional Tests', () => {
         },
         { title: 'Clean Architecture: A Craftsman\'s Guide to Software Structure and Design' }
       ];
-      Book.insertMany(books).then(() => done());
+      Book.insertMany(books).then(() => {}).catch(err => console.log(err));
     });
 
-    test('Array of books', done => {
+    test('Array of books', () => {
       chai.request(app).get('/api/books').then(res => {
         assert.equal(res.status, 200);
         assert.isArray(res.body);
@@ -78,35 +78,32 @@ suite('Functional Tests', () => {
         assert.equal(res.body[1].title, 'Automate The Boring Stuff With Python');
         assert.exists(res.body[1]._id);
         assert.equal(res.body[1].commentcount, 2);
-        done();
-      })
+      }).catch(err => console.log(err));
     });
     
-    test('Not found', done => {
+    test('Not found', () => {
       chai.request(app).get('/api').then(res => {
         assert.equal(res.status, 404);
         assert.exists('notfound');
         assert.equal(res.body.notfound, 'resource not found');
-        done();
-      })
+      }).catch(err => console.log(err));
     });
 
-    test('No books stored', done => {
+    test('No books stored', () => {
       Book.deleteMany({}).then(() => {});
 
       chai.request(app).get('/api/books').then(res => {
         assert.equal(res.status, 400);
         assert.exists('nobooks');
         assert.equal(res.body.nobooks, 'no books stored');
-        done();
-      });
+      }).catch(err => console.log(err));
     });
     
   });
     
   suite('DELETE /api/books/:_id => text', () => {
     let booksIDs = [];
-    suiteSetup( done => {
+    suiteSetup( () => {
       const books = [
         { 
           title: 'Automate The Boring Stuff With Python',
@@ -116,54 +113,43 @@ suite('Functional Tests', () => {
         { title: 'The Pragmatic Programmer' }
       ];
       Book.insertMany(books).then(bookarr => {
-        booksIDs = bookarr.map(book => book._id );
-        done();
-      });
+        booksIDs = bookarr.map(book => String(book._id) );
+      }).catch(err => console.log(err));
       
     });
     
-    test('No _id', done => {
-      chai.request(app).delete('/api/books').then(res => {
-        assert.equal(res.status, 400);
-        assert.exists('noid');
-        assert.equal(res.body.noid, 'no books sent');
-        done();
-      });
+    test('No book exists', () => {
+      const wrongID = booksIDs.slice(1) + 1;
+      chai.request(app).delete(`/api/books/${wrongID}`).then(res => {
+        assert.equal(res.status, 404);
+        assert.equal(res.body.notfound, 'book no exists');
+      }).catch(err => console.log(err));
     });
     
-    test('Valid _id', done => {
+    test('Valid _id', () => {
       chai.request(app).delete(`/api/books/${booksIDs[2]}`).then(res => {
         assert.equal(res.status, 200);
         assert.equal(res.body.success, booksIDs[2]);
-        done();
-      });
+      }).catch(err => console.log(err));
     });
 
-    test('Invalid _id', done => {
-      done();
-    });
-
-    test('ID not found', done => {
-      done();
-    });
-    
   });
   /*
   suite('GET /api/books/:_id => text', () => {
     
-    test('No _id', done => {
+    test('No _id', () => {
       
     });
     
-    test('Valid _id', done => {
+    test('Valid _id', () => {
       
     });
 
-    test('Invalid _id', done => {
+    test('Invalid _id', () => {
 
     });
     
-    test('Comment count must be zero', done => {
+    test('Comment count must be zero', () => {
       chai.request(app).get('/api/books')
     });
 
@@ -173,25 +159,21 @@ suite('Functional Tests', () => {
     
     let IDtest = '';
 
-    suiteSetup( done => {
-      IDtest = Book.findOne().then(book => book._id);
-      done();
+    suiteSetup( () => {
+      IDtest = Book.fin()().then(book => book._id)
     });
     
-    test('No _id', done => {
+    test('No _id', () => {
       chai.request(app).post('api/books').then(res => {
-        done();
       })
     });
     
-    test('Valid _id', done => {
+    test('Valid _id', () => {
       chai.request(app).post(`/api/books/${IDtest}`).then(res => {
-        done();
       })
     });
 
-    test('Invalid _id', done => {
-      done();
+    test('Invalid _id', () => 
     });
   
   }); 
