@@ -87,7 +87,7 @@ suite('Functional Tests', () => {
     });
   });
     
-  suite('DELETE /api/books/:_id => text', () => {
+  suite('DELETE /api/books/:_id => success object', () => {
     let booksIDs = [];
 
     suiteSetup( async () => {
@@ -127,7 +127,7 @@ suite('Functional Tests', () => {
     });
   });
   
-  suite('GET /api/books/:_id => text', () => {
+  suite('GET /api/books/:_id => book object', () => {
     
     test('Comment array length must be 2', async () => {
       const query = { title: 'Automate The Boring Stuff With Python' };
@@ -152,31 +152,51 @@ suite('Functional Tests', () => {
       
       assert.equal(res.status, 200);
       assert.equal(res.body.comments.length, 0);
-    })
+    });
 
   });
-  /*
-  suite('POST /api/books/:_id => text', () => {
+  
+  suite('POST /api/books/:_id => book object', () => {
     
     let IDtest = '';
 
-    suiteSetup( () => {
-      IDtest = Book.fin()().then(book => book._id)
+    suiteSetup( async () => {
+      IDtest = await Book.findOne().then(book => String(book._id));
     });
-    
-    test('No _id', () => {
-      chai.request(app).post('api/books').then(res => {
-      })
-    });
-    
-    test('Valid _id', () => {
-      chai.request(app).post(`/api/books/${IDtest}`).then(res => {
-      })
+     
+    test('Not found', async () => {
+      
+      const wrongID = IDtest.slice(1) + 1;
+
+      const res = await chai.request(app).
+        post(`/api/books/${wrongID}`).
+        send({ comment: 'comment' }).
+        then(res => res);
+      
+      assert.equal(res.status, 404);
+      assert.equal(res.body.notfound, 'book not found');
     });
 
-    test('Invalid _id', () => 
+    test('No comment sent', async () => {
+      const res = await chai.request(app).
+        post(`/api/books/${IDtest}`).
+        send({ comment: '' }).
+        then(res => res);
+      
+      assert.equal(res.status, 404);
+      assert.equal(res.body.notfound, 'book not found');
+    });
+
+    test('Valid _id', async () => {
+      const res = await chai.request(app).
+        post(`/api/books/${IDtest}`).
+        send({ comment: 'I like it!'}).
+        then(res => res);
+      
+      assert.equal(res.status, 200); // IDs must be sorted by most recent
+      assert.equal(res.body.comments[0].text, 'I like it!');
     });
   
   }); 
-  */
+
 });
