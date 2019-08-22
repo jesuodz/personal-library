@@ -1,7 +1,11 @@
-const Book = require('../models/Book');
+const Book            = require('../models/Book');
+const validateComment = require('../validation/comment');
 
 module.exports = (req, res) => {
-  console.log(req.params.id);
+  const { errors, isValid } = validateComment(req.body);
+
+  if (!isValid) return res.status(400).json(errors);
+
   Book.
     findOne({ _id: req.params.id }).
     then(book => {

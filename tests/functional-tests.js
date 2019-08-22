@@ -180,11 +180,10 @@ suite('Functional Tests', () => {
     test('No comment sent', async () => {
       const res = await chai.request(app).
         post(`/api/books/${IDtest}`).
-        send({ comment: '' }).
         then(res => res);
       
-      assert.equal(res.status, 404);
-      assert.equal(res.body.notfound, 'book not found');
+      assert.equal(res.status, 400);
+      assert.equal(res.body.comment, 'Comment is required');
     });
 
     test('Valid _id', async () => {
