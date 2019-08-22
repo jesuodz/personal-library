@@ -6,7 +6,7 @@ const titleValidator = data => {
 
   if (isEmpty(title)) {
     errors.title = 'no title sent'
-    return { errors };
+    return errors;
   }
 
   return false;

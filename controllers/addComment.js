@@ -2,9 +2,9 @@ const Book            = require('../models/Book');
 const validateComment = require('../validation/comment');
 
 module.exports = (req, res) => {
-  const { errors, isValid } = validateComment(req.body);
+  const errors = validateComment(req.body);
 
-  if (!isValid) return res.status(400).json(errors);
+  if (errors.comment) return res.status(400).json(errors);
 
   Book.
     findOne({ _id: req.params.id }).
