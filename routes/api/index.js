@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {
-  add, getAllBooks, deleteOne, getOne, addComment
+  add, getAllBooks, deleteOne, getOne, addComment, deleteAll
 } = require('../../controllers');
 
 router.get('/test', (req, res) => res.json({msg: 'Test works'}));
@@ -50,5 +50,13 @@ router.get('/:id', getOne);
  * @return {Object} A book with sorted comments by date.
  */
 router.post('/:id', addComment);
+
+/**
+ * Delete all books in the DB
+ * 
+ * @route DELETE /api/books
+ * @return {Object} a success message and number of deleted books.
+ */
+router.delete('/', deleteAll);
 
 module.exports = router;

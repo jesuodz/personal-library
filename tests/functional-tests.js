@@ -154,6 +154,15 @@ suite('Functional Tests', () => {
       assert.equal(res.body.comments.length, 0);
     });
 
+    test('Book not found', async () => {
+      const res = await chai.request(app).
+        get('/api/books/notfound').
+        then(res => res);
+      
+      assert.equal(res.status, 404);
+      assert.equal(res.body.notfound, 'book not found');
+    });
+
   });
   
   suite('POST /api/books/:_id => book object', () => {
@@ -196,6 +205,19 @@ suite('Functional Tests', () => {
       assert.equal(res.body.comments[0].text, 'I like it!');
     });
   
-  }); 
+  });
+  
+  suite('DELETE /api/books/', () => {
+
+    test('Complete delete successful', async () => {
+      const res = await chai.request(app).
+        delete('/api/books/').
+        then(res => res);
+
+      assert.equal(res.status, 200);
+      assert.equal(res.body.msg, 'Complete delete successful');
+      assert.equal(res.body.booksCount, 3);
+    });
+  })
 
 });
