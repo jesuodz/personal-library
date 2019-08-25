@@ -11,4 +11,4 @@ module.exports = (req, res) => {
   });
 
   newBook.save().then( book => res.json(book));
-}
+};
