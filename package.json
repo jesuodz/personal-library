@@ -4,6 +4,7 @@
   "description": "Personal library management project, built for freeCodeCamp",
   "main": "app.js",
   "scripts": {
+    "client-build": "npm run build --prefix client",
     "client": "npm start --prefix client",
     "server": "nodemon app.js --ignore client/ --ignore tests/",
     "start": "node app.js",
