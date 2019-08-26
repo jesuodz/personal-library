@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, CardBody, CardFooter, CardSubtitle,
   CardColumns, Button, CardTitle } from 'reactstrap';
+import { deleteBook } from '../../actions';
 
 import './index.css';
 
 class BookList extends Component {
+
+  onDeleteClick(id) {
+    this.props.deleteBook(id);
+  }
+
   render() {
     const books = this.props.books;
 
@@ -33,6 +39,7 @@ class BookList extends Component {
                   className='mr-2'
                   size='md'
                   color='danger'
+                  onClick={this.onDeleteClick.bind(this, book._id)}
                 >
                   Delete
                 </Button>
@@ -46,7 +53,8 @@ class BookList extends Component {
 };
 
 BookList.propTypes = {
-  books: PropTypes.array.isRequired
+  books: PropTypes.array.isRequired,
+  deleteBook: PropTypes.func.isRequired
 };
 
 BookList.defaultProps = {
@@ -57,4 +65,4 @@ const mapStateToProps = state => ({
   books: state.books
 });
 
-export default connect(mapStateToProps)(BookList);
+export default connect(mapStateToProps, { deleteBook })(BookList);

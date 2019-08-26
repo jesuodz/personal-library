@@ -1,4 +1,4 @@
-import { GET_BOOKS } from "./types";
+import { GET_BOOKS, DELETE_BOOK } from "./types";
 
 const initialState = {
   books: [],
@@ -12,6 +12,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         books: action.payload
+      }
+    case DELETE_BOOK:
+      return {
+        ...state,
+        book: action.payload
       }
     default:
       return state;
