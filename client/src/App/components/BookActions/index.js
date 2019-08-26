@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
-import { ButtonToolbar, Button } from 'reactstrap';
+import { ButtonToolbar, Button,Container, Row } from 'reactstrap';
+
+const containerStyle = { padding: '20px', justifyContent: 'center' };
 
 class BookActions extends Component {
   render() {
     return (
-      <ButtonToolbar>
-        <Button>
-          Hello World
+      <Container className='clearfix text-center' style={containerStyle}>
+        <Button
+          className='mr-2'
+          color='primary'
+        >
+          Add a book
         </Button>
-      </ButtonToolbar>
+        <Button
+          className='mr-2'
+          color='danger'
+        >
+          Delete all
+        </Button>
+      </Container>
     );
   }
 }
