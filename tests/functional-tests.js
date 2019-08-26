@@ -6,10 +6,22 @@ const Book      = require('../models/Book');
 chai.use(chaiHttp);
 
 suite('Functional Tests', () => {
-
   suiteSetup( async () => {
     await Book.deleteMany({});
   });
+
+  suiteTeardown( async () => {
+    const books = [
+      { 
+        title: 'Automate The Boring Stuff With Python',
+        comments: [{ text: 'An excellent book'}, { text: 'OMG!'}]
+      },
+      { title: 'Clean Architecture: A Craftsman\'s Guide to Software Structure and Design' },
+      { title: 'The Pragmatic Programmer' }
+    ];
+
+    await Book.insertMany(books);
+  })
 
   test('Return {msg: \'Test Works\'}', () => {
     chai
