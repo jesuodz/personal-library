@@ -9,7 +9,7 @@ import './index.css';
 
 class BookList extends Component {
 
-  onDeleteClick(id) {
+  onDeleteClick = id => {
     this.props.deleteBook(id);
   }
 

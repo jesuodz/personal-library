@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_BOOKS, DELETE_BOOK } from './types';
+import { GET_BOOKS, DELETE_BOOK, DELETE_ALL } from './types';
 
 export const getBooks = () => dispatch => {
   axios
@@ -24,4 +24,18 @@ export const deleteBook = id => dispatch => {
       dispatch(getBooks());
     })
     .catch(err => console.log(err.response.data));
-} 
+};
+
+export const deleteAll = () => dispatch => {
+  if (window.confirm('Are you sure you want to delete all books?')) {
+    axios
+      .delete('/api/books')
+      .then(res => {
+        dispatch({
+          type: DELETE_ALL,
+          payload: res.data
+        });
+      })
+      .catch(err => console.log(err));
+  }
+};

@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
-import { ButtonToolbar, Button,Container, Row } from 'reactstrap';
+import PropTypes from 'prop-types';
+import { Container, Button } from 'reactstrap';
+import { connect } from 'react-redux';
+import { deleteAll } from '../../actions';
 
 const containerStyle = { padding: '20px', justifyContent: 'center' };
 
 class BookActions extends Component {
+
+  onDeleteClick = () => {
+    if (this.props.totalBooks) {
+      this.props.deleteAll();
+    } else {
+      console.log('Sorry, there\'re no books stored')
+    }
+  }
+
   render() {
     return (
-      <Container className='clearfix text-center' style={containerStyle}>
+      <Container style={containerStyle}>
         <Button
           className='mr-2'
           color='primary'
@@ -16,6 +28,7 @@ class BookActions extends Component {
         <Button
           className='mr-2'
           color='danger'
+          onClick={this.onDeleteClick.bind(this)}
         >
           Delete all
         </Button>
@@ -24,4 +37,13 @@ class BookActions extends Component {
   }
 }
 
-export default BookActions;
+BookActions.propTypes = {
+  deleteAll: PropTypes.func.isRequired,
+  // totalBooks: PropTypes.number.isRequired
+};
+
+const mapStateToProps = state => ({
+  totalBooks: state.books.length
+});
+
+export default connect(mapStateToProps, { deleteAll })(BookActions);
