@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_BOOKS, DELETE_BOOK, DELETE_ALL } from './types';
+import { GET_BOOKS, DELETE_BOOK, DELETE_ALL, GET_ERRORS } from './types';
 
 export const getBooks = () => dispatch => {
   axios
@@ -10,7 +10,10 @@ export const getBooks = () => dispatch => {
         payload: res.data
       })
     )
-    .catch(err => console.log(err.response.data));
+    .catch(err => dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    }));
 };
 
 export const deleteBook = id => dispatch => {
@@ -35,6 +38,7 @@ export const deleteAll = () => dispatch => {
           type: DELETE_ALL,
           payload: res.data
         });
+        dispatch(getBooks());
       })
       .catch(err => console.log(err));
   }

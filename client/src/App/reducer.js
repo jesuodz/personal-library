@@ -1,4 +1,4 @@
-import { GET_BOOKS, DELETE_BOOK, DELETE_ALL } from "./types";
+import { GET_BOOKS, DELETE_BOOK, DELETE_ALL, GET_ERRORS } from "./types";
 
 const initialState = {
   books: [],
@@ -23,6 +23,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         msg: action.payload
+      }
+    case GET_ERRORS:
+      return {
+        ...state,
+        errors: action.payload
       }
     default:
       return state;
