@@ -9,14 +9,26 @@ const containerStyle = { padding: '20px', justifyContent: 'center' };
 class BookActions extends Component {
 
   onDeleteClick = () => {
-    if (this.props.totalBooks) {
-      this.props.deleteAll();
-    } else {
-      console.log('Sorry, there\'re no books stored')
-    }
+    this.props.deleteAll();
   }
 
   render() {
+    const errors = this.props.errors;
+
+    let deleteButton;
+
+    if (!errors.nobooks) {
+      deleteButton = (
+        <Button
+          className='mr-2'
+          color='danger'
+          onClick={this.onDeleteClick.bind(this)}
+        >
+          Delete all
+        </Button>
+      );
+    }
+    
     return (
       <Container style={containerStyle}>
         <Button
@@ -25,25 +37,18 @@ class BookActions extends Component {
         >
           Add a book
         </Button>
-        <Button
-          className='mr-2'
-          color='danger'
-          onClick={this.onDeleteClick.bind(this)}
-        >
-          Delete all
-        </Button>
+        {deleteButton}
       </Container>
     );
   }
-}
+};
 
 BookActions.propTypes = {
-  deleteAll: PropTypes.func.isRequired,
-  // totalBooks: PropTypes.number.isRequired
+  deleteAll: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  totalBooks: state.books.length
+  errors: state.errors
 });
 
 export default connect(mapStateToProps, { deleteAll })(BookActions);

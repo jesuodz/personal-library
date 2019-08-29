@@ -15,7 +15,6 @@ class BookList extends Component {
 
   render() {
     const books = this.props.books;
-    const errors = this.props.errors;
 
     let dashboardContent;
 
@@ -56,7 +55,9 @@ class BookList extends Component {
     } else {
       dashboardContent = (
         <div>
-          <p className='lead text-muted'>Currently there're no books stored. Add one!</p>
+          <p className='lead text-muted'>
+            Currently there're no books stored. Add one!
+          </p>
         </div>
       );
     }
