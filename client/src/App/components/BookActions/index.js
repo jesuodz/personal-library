@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import AddBook from './components/AddBook';
 import { Container, Button } from 'reactstrap';
 import { connect } from 'react-redux';
 import { deleteAll } from '../../actions';
@@ -31,12 +32,7 @@ class BookActions extends Component {
     
     return (
       <Container style={containerStyle}>
-        <Button
-          className='mr-2'
-          color='primary'
-        >
-          Add a book
-        </Button>
+        <AddBook />
         {deleteButton}
       </Container>
     );
